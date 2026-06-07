@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🐵 Äffchenkarten – KI Unplugged (Original-Merkmale)</title>
+<style>
+:root{--brown:#7a4020;--tan:#d4946a;--blue:#1a73e8;--green:#0f9d58;--red:#d93025;--orange:#f29900;--purple:#6a0dad;--bg:#f5f0eb;--card:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:#1a1a1a;line-height:1.62}
+header{background:linear-gradient(135deg,#3e1f05 0%,#7a4020 60%,#b86030 100%);color:#fff;text-align:center;padding:2.4rem 1.5rem 1.8rem;position:relative;overflow:hidden}
+header h1{font-size:2.1rem;font-weight:800;margin-bottom:.35rem;text-shadow:0 2px 10px rgba(0,0,0,.4)}
+header p{opacity:.88;font-size:1rem;max-width:640px;margin:0 auto}
+.src{font-size:.78rem;opacity:.6;margin-top:.5rem}
+.phases{display:flex;justify-content:center;gap:.35rem;margin-top:1.1rem;flex-wrap:wrap}
+.ph{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.3);transition:.3s}
+.ph.active{background:var(--orange);border-color:var(--orange)}
+.ph.done{background:var(--green);border-color:var(--green)}
+nav{background:#3e1f05;padding:.6rem 1rem;display:flex;justify-content:center;gap:.4rem;flex-wrap:wrap;position:sticky;top:0;z-index:100}
+.nb{background:rgba(255,255,255,.12);color:rgba(255,255,255,.82);border:none;border-radius:18px;padding:.38rem .9rem;font-size:.83rem;cursor:pointer;transition:.2s;font-weight:600}
+.nb:hover{background:rgba(255,255,255,.22);color:#fff}
+.nb.active{background:var(--orange);color:#fff}
+.sec{display:none;max-width:1060px;margin:0 auto;padding:1.6rem 1rem 3rem}
+.sec.active{display:block}
+.stit{font-size:1.55rem;font-weight:800;color:#3e1f05;margin-bottom:.25rem}
+.ssub{color:#666;font-size:.97rem;margin-bottom:1.4rem}
+.info{background:#fff;border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:1.1rem;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.info h3{font-size:1rem;margin-bottom:.45rem;color:#3e1f05}
+.hl{background:linear-gradient(135deg,#fff8e1,#fff3cd);border-left:4px solid var(--orange);border-radius:6px;padding:.8rem 1rem;margin:.7rem 0;font-size:.95rem}
+.dbox{background:#fce8e6;border-left:4px solid var(--red);border-radius:6px;padding:.8rem 1rem;margin:.7rem 0}
+.sbox{background:#e6f4ea;border-left:4px solid var(--green);border-radius:6px;padding:.8rem 1rem;margin:.7rem 0}
+.pbox{background:#f3e5f5;border-left:4px solid var(--purple);border-radius:6px;padding:.8rem 1rem;margin:.7rem 0}
+/* CARDS */
+.cgrid{display:flex;flex-wrap:wrap;gap:.9rem;justify-content:center;margin:1.1rem 0}
+.mc{background:#fff;border-radius:14px;box-shadow:0 3px 12px rgba(0,0,0,.11);padding:.9rem .75rem .7rem;display:flex;flex-direction:column;align-items:center;gap:.45rem;width:148px;transition:.25s;position:relative}
+.mc:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.15)}
+.cn{position:absolute;top:5px;left:9px;font-size:.68rem;color:#bbb;font-weight:700}
+.lb{display:inline-flex;align-items:center;gap:.25rem;padding:.28rem .7rem;border-radius:18px;font-size:.79rem;font-weight:700}
+.lb.d{background:#fce8e6;color:var(--red)}
+.lb.s{background:#e6f4ea;color:var(--green)}
+.lb.u{background:#f1f3f4;color:#666}
+.lb.sp{background:#f3e5f5;color:var(--purple)}
+.mc.test{cursor:pointer;border:2px solid transparent}
+.mc.test:hover{border-color:#bbb}
+.mc.cd{border:3px solid var(--red);background:#fff9f8}
+.mc.cs{border:3px solid var(--green);background:#f8fff9}
+.tbs{display:flex;gap:.35rem;margin-top:.25rem;width:100%}
+.bc{border:none;border-radius:7px;padding:.28rem .4rem;font-size:.72rem;font-weight:700;cursor:pointer;transition:.2s;flex:1}
+.bd{background:#fce8e6;color:var(--red)}.bd:hover{background:var(--red);color:#fff}
+.bs{background:#e6f4ea;color:var(--green)}.bs:hover{background:var(--green);color:#fff}
+/* FEATURE OVERVIEW */
+.fgrid{display:flex;flex-wrap:wrap;gap:.7rem;justify-content:center;margin:.8rem 0}
+.fb{background:#fff;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.07);padding:.7rem .9rem;text-align:center;min-width:120px}
+.fb h4{font-size:.8rem;color:#666;margin-bottom:.5rem;font-weight:700}
+.fb .samples{display:flex;gap:.4rem;justify-content:center;align-items:center;flex-wrap:wrap}
+/* RULE */
+.rarea{background:#fff;border-radius:12px;padding:1.4rem;box-shadow:0 2px 8px rgba(0,0,0,.07);margin:1rem 0}
+.rarea h3{font-size:1.05rem;color:#3e1f05;margin-bottom:.7rem}
+textarea{width:100%;border:2px solid #dadce0;border-radius:8px;padding:.75rem;font-size:.95rem;font-family:inherit;resize:vertical;min-height:75px;transition:.2s}
+textarea:focus{outline:none;border-color:var(--blue)}
+/* BTNS */
+.btn{padding:.55rem 1.5rem;border:none;border-radius:22px;font-size:.93rem;font-weight:700;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:.35rem}
+.bp{background:var(--blue);color:#fff}.bp:hover{opacity:.88}
+.bg{background:var(--green);color:#fff}.bg:hover{opacity:.88}
+.bo{background:var(--orange);color:#fff}.bo:hover{opacity:.88}
+.bb{background:var(--brown);color:#fff}.bb:hover{opacity:.88}
+/* PROGRESS */
+.prow{display:flex;align-items:center;gap:.8rem;background:#fff;border-radius:8px;padding:.7rem 1rem;box-shadow:0 1px 4px rgba(0,0,0,.07);margin:1rem 0}
+.pbar{flex:1;height:11px;background:#f1f3f4;border-radius:6px;overflow:hidden}
+.pfill{height:100%;background:linear-gradient(90deg,var(--green),#34a853);border-radius:6px;transition:.5s;width:0}
+/* SCORE */
+.sdis{text-align:center;background:#fff;border-radius:14px;padding:1.6rem;box-shadow:0 3px 12px rgba(0,0,0,.09);margin:1rem 0}
+.sbig{font-size:2.8rem;font-weight:900;color:#1a1a1a}
+/* AI STEPS */
+.asteps{counter-reset:st;margin:1rem 0}
+.astep{background:#fff;border-radius:9px;padding:.9rem 1.1rem .9rem 3.3rem;margin:.6rem 0;box-shadow:0 2px 6px rgba(0,0,0,.06);position:relative;counter-increment:st}
+.astep::before{content:counter(st);position:absolute;left:.8rem;top:50%;transform:translateY(-50%);width:26px;height:26px;background:var(--brown);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.84rem}
+.astep h4{font-size:.95rem;color:#3e1f05;margin-bottom:.25rem}
+.astep p{font-size:.88rem;color:#444}
+/* RESULT */
+.rcards{display:flex;flex-wrap:wrap;gap:.7rem;justify-content:center;margin:.9rem 0}
+.rcard{background:#fff;border-radius:9px;padding:.7rem;display:flex;flex-direction:column;align-items:center;gap:.35rem;width:128px;box-shadow:0 2px 5px rgba(0,0,0,.07);font-size:.75rem;text-align:center}
+/* LEGEND TABLE */
+table{width:100%;border-collapse:collapse;font-size:.87rem;margin:.6rem 0}
+th{background:#3e1f05;color:#fff;padding:.45rem .7rem;text-align:left}
+td{padding:.45rem .7rem;border-bottom:1px solid #eee;vertical-align:middle}
+tr:nth-child(even) td{background:#f9f5f0}
+/* GLOSSARY GRID */
+.ggrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.7rem;margin-top:.5rem}
+.gt{background:#f5f0eb;border-radius:8px;padding:.75rem}
+.gt strong{color:var(--brown);display:block;margin-bottom:.25rem}
+.gt p{font-size:.85rem;color:#444}
+@media(max-width:600px){header h1{font-size:1.5rem}.mc{width:130px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div style="font-size:.9rem;opacity:.6;margin-bottom:.35rem">AI Unplugged – Aktivität 1 · Original-Merkmale</div>
+  <h1>🐵 Äffchenkarten – Wer ist gefährlich?</h1>
+  <p>Entdecke die Klassifizierungsregel – mit allen Original-Augen-, Mund- und Accessoire-Formen.</p>
+  <div class="src">Basierend auf: Seegerer &amp; Lindner, aiunplugged.org · CC BY NC</div>
+  <div class="phases">
+    <div class="ph active" id="ph1">1</div>
+    <div class="ph" id="ph2">2</div>
+    <div class="ph" id="ph3">3</div>
+    <div class="ph" id="ph4">4</div>
+    <div class="ph" id="ph5">5</div>
+    <div class="ph" id="ph6">6</div>
+  </div>
+</header>
+
+<nav>
+  <button class="nb active" onclick="go(1)">① Einführung</button>
+  <button class="nb" onclick="go(2)">② Training</button>
+  <button class="nb" onclick="go(3)">③ Regelentdeckung</button>
+  <button class="nb" onclick="go(4)">④ Testphase</button>
+  <button class="nb" onclick="go(5)">⑤ Auflösung</button>
+  <button class="nb" onclick="go(6)">⑥ KI-Verbindung</button>
+</nav>
+
+<!-- ═══ 1: EINFÜHRUNG ═══ -->
+<div class="sec active" id="s1">
+  <div class="stit">🌴 Szenario &amp; Original-Merkmale</div>
+  <p class="ssub">Lerne zuerst alle Merkmale kennen, bevor du die Trainingsphase startest.</p>
+
+  <div class="info">
+    <h3>📖 Die Aufgabe</h3>
+    <p>Du bist Forscherin bzw. Forscher im Regenwald. Eine KI soll erkennen, welche Affen <strong>gefährlich</strong> sind. Du spielst die KI: Entdecke die Klassifizierungsregel aus den Trainingsbeispielen!</p>
+  </div>
+
+  <div class="hl"><strong>🎯 Ziel:</strong> Finde das eine Merkmal, das <em>zuverlässig</em> unterscheidet – und ignoriere die Ablenkungsmerkmale (Red Herrings).</div>
+
+  <div class="info">
+    <h3>👁️ Original-Augenformen (4 Typen)</h3>
+    <div class="fgrid" id="eye-overview"></div>
+  </div>
+
+  <div class="info">
+    <h3>👄 Original-Mundformen (5 Typen + Sonderform)</h3>
+    <div class="fgrid" id="mouth-overview"></div>
+    <div class="pbox" style="margin-top:.7rem">
+      <strong>⚠️ Sonderform – Zunge raus:</strong> Diese Mundform wurde speziell eingeführt, um die <em>Grenzen von Entscheidungsbäumen</em> zu zeigen. Mehr dazu in Phase 6.
+    </div>
+  </div>
+
+  <div class="info">
+    <h3>🎩 Original-Accessoires (5 Typen)</h3>
+    <div class="fgrid" id="acc-overview"></div>
+    <p style="font-size:.85rem;color:#888;margin-top:.5rem">⚠️ Hinweis: Im Original-Kartensatz sind nicht alle Kombinationen von Mund, Augen und Accessoire enthalten!</p>
+  </div>
+
+  <div style="text-align:center;margin-top:1.4rem">
+    <button class="btn bb" onclick="go(2)">Weiter zur Trainingsphase →</button>
+  </div>
+</div>
+
+<!-- ═══ 2: TRAINING ═══ -->
+<div class="sec" id="s2">
+  <div class="stit">📚 Trainingsphase – Lerne von Beispielen</div>
+  <p class="ssub">Schau dir die beschrifteten Äffchenkarten genau an. Was haben die <span style="color:var(--red);font-weight:700">gefährlichen</span> Affen gemeinsam?</p>
+  <div class="hl"><strong>💡 Tipp:</strong> Vergleiche Mund, Augen und Accessoires. Welches Merkmal kommt bei <em>allen</em> gefährlichen Affen vor – und bei keinem ungefährlichen?</div>
+  <div class="cgrid" id="train-grid"></div>
+
+  <div class="info" style="margin-top:1rem">
+    <h3>📊 Merkmalsübersicht der Trainingskarten</h3>
+    <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>#</th><th>Augen</th><th>Mund</th><th>Accessoire</th><th>Klasse</th></tr></thead>
+      <tbody id="train-table"></tbody>
+    </table>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:1.4rem">
+    <button class="btn bb" onclick="go(3)">Ich habe die Muster studiert →</button>
+  </div>
+</div>
+
+<!-- ═══ 3: REGELENTDECKUNG ═══ -->
+<div class="sec" id="s3">
+  <div class="stit">🔍 Regelentdeckung</div>
+  <p class="ssub">Formuliere deine Entscheidungsregel, bevor du zur Testphase gehst.</p>
+  <div class="info">
+    <h3>🔎 Checkliste</h3>
+    <div style="display:flex;flex-wrap:wrap;gap:.6rem;margin:.6rem 0">
+      <label style="display:flex;align-items:center;gap:.35rem;background:#f5f0eb;padding:.45rem .7rem;border-radius:8px;cursor:pointer"><input type="checkbox"> <span>Alle 4 Augenformen verglichen</span></label>
+      <label style="display:flex;align-items:center;gap:.35rem;background:#f5f0eb;padding:.45rem .7rem;border-radius:8px;cursor:pointer"><input type="checkbox"> <span>Alle Mundformen verglichen</span></label>
+      <label style="display:flex;align-items:center;gap:.35rem;background:#f5f0eb;padding:.45rem .7rem;border-radius:8px;cursor:pointer"><input type="checkbox"> <span>Alle Accessoires verglichen</span></label>
+      <label style="display:flex;align-items:center;gap:.35rem;background:#f5f0eb;padding:.45rem .7rem;border-radius:8px;cursor:pointer"><input type="checkbox"> <span>Ablenkungsmerkmale identifiziert</span></label>
+    </div>
+  </div>
+  <div class="rarea">
+    <h3>✏️ Meine Entscheidungsregel:</h3>
+    <p style="font-size:.88rem;color:#666;margin-bottom:.6rem">Ein Affe ist <strong>gefährlich</strong>, wenn er ...</p>
+    <textarea id="rule-txt" placeholder="z.B. &quot;Ein Affe ist gefährlich, wenn er Zähne zeigt – unabhängig von Augen und Accessoires.&quot;"></textarea>
+  </div>
+  <div class="info">
+    <h3>🤔 Reflexionsfragen</h3>
+    <ul style="padding-left:1.2rem;font-size:.95rem">
+      <li style="margin:.3rem 0">Kommt ein Merkmal bei <em>allen</em> gefährlichen und bei <em>keinem</em> ungefährlichen Affen vor?</li>
+      <li style="margin:.3rem 0">Welche Merkmale erscheinen in beiden Klassen (→ Ablenkungsmerkmale / Red Herrings)?</li>
+      <li style="margin:.3rem 0">Würde deine Regel auf alle 40 Originalkarten passen?</li>
+    </ul>
+  </div>
+  <div style="text-align:center;margin-top:1.4rem">
+    <button class="btn bo" onclick="startTest()">🚀 Zur Testphase!</button>
+  </div>
+</div>
+
+<!-- ═══ 4: TEST ═══ -->
+<div class="sec" id="s4">
+  <div class="stit">🧪 Testphase – Klassifiziere diese Affen!</div>
+  <p class="ssub">Wende deine Regel auf unbekannte Affen an. Achte besonders auf den <strong>Sonderfall mit der Zunge!</strong></p>
+  <div class="prow">
+    <span style="font-size:.88rem;color:#555">Fortschritt:</span>
+    <div class="pbar"><div class="pfill" id="pfill"></div></div>
+    <div style="font-weight:700;min-width:48px;text-align:right;font-size:.93rem" id="pcnt">0/9</div>
+  </div>
+  <div class="cgrid" id="test-grid"></div>
+  <div style="text-align:center;margin-top:1.4rem">
+    <button class="btn bg" id="res-btn" onclick="showRes()" style="display:none">📊 Ergebnis auswerten →</button>
+  </div>
+</div>
+
+<!-- ═══ 5: AUFLÖSUNG ═══ -->
+<div class="sec" id="s5">
+  <div class="stit">🏆 Auflösung</div>
+  <p class="ssub">Die Lösung und eine Analyse der Sonderform.</p>
+  <div class="sdis">
+    <div class="sbig" id="sv">–</div>
+    <div style="font-size:1.05rem;color:#666;margin-top:.3rem" id="sl">–</div>
+  </div>
+  <div class="dbox">
+    <strong>🔑 Die Regel:</strong><br>
+    Ein Affe ist <strong>GEFÄHRLICH</strong>, wenn er den <strong>Mund geöffnet hat und Zähne zeigt</strong>.<br>
+    <em>Alle anderen Merkmale – Augenform und Accessoires – sind Ablenkungsmerkmale (Red Herrings).</em>
+  </div>
+  <div class="sbox">
+    <strong>✅ UNGEFÄHRLICH</strong> sind Affen mit: neutral-Mund, Schmollmund, rotem offenem Mund (kein Zähne), Zunge raus.
+  </div>
+  <div class="pbox">
+    <strong>🟣 Sonderfall – Zunge raus:</strong> Der Affe mit herausgestreckter Zunge ist <strong>ungefährlich</strong> (keine Zähne sichtbar). Er wurde als Sonderform eingeführt, weil er einen einfachen Entscheidungsbaum an seine Grenzen bringt. Mehr dazu in Phase 6!
+  </div>
+  <div class="rcards" id="rcards"></div>
+  <div style="text-align:center;margin-top:1.4rem">
+    <button class="btn bb" onclick="go(6)">🧠 KI-Verbindung entdecken →</button>
+  </div>
+</div>
+
+<!-- ═══ 6: KI-VERBINDUNG ═══ -->
+<div class="sec" id="s6">
+  <div class="stit">🤖 Verbindung zur Künstlichen Intelligenz</div>
+  <p class="ssub">Was du gerade gemacht hast, entspricht genau dem maschinellen Lernen!</p>
+
+  <div class="info">
+    <h3>🔄 Du hast gerade Maschinelles Lernen simuliert</h3>
+    <div class="asteps">
+      <div class="astep"><h4>Trainings-Datensatz</h4><p>Gelabelte Beispiele (Affe + Klasse). Im AI-Unplugged-Original gibt es <strong>40 Äffchenkarten</strong>. Echte KI-Systeme lernen aus Millionen von Beispielen.</p></div>
+      <div class="astep"><h4>Merkmalsextraktion (Feature Extraction)</h4><p>Du hast Augen, Mund und Accessoires analysiert. Eine KI extrahiert Merkmale aus Pixelwerten, Formen, Farben und Texturen.</p></div>
+      <div class="astep"><h4>Mustererkennung (Pattern Recognition)</h4><p>Du erkanntest: «Zähne sichtbar → gefährlich». Ein Algorithmus (z.B. Entscheidungsbaum) berechnet statistisch, welches Merkmal am stärksten mit der Klasse korreliert.</p></div>
+      <div class="astep"><h4>Anwendungsphase (Inference)</h4><p>Neue, unbekannte Affen wurden mit deiner gelernten Regel klassifiziert – genau das tut ein trainiertes KI-Modell.</p></div>
+      <div class="astep"><h4>Evaluation</h4><p>Dein Testergebnis misst die Genauigkeit. KI-Systeme werden auf separaten <strong>Testdaten</strong> evaluiert, die nicht zum Training gehörten.</p></div>
+    </div>
+  </div>
+
+  <div class="info">
+    <h3>🌳 Entscheidungsbäume und ihre Grenzen – die Sonderform erklärt</h3>
+    <div class="hl" style="font-size:.93rem">
+      <strong>Was ist ein Entscheidungsbaum?</strong><br>
+      Ein Entscheidungsbaum stellt Klassifizierungsregeln als Baumstruktur dar:<br>
+      <code style="display:block;background:#fff;padding:.5rem;border-radius:4px;margin-top:.5rem;font-size:.88rem">
+        Zeigt der Affe Zähne?<br>
+        ├── JA → GEFÄHRLICH ⚠️<br>
+        └── NEIN → UNGEFÄHRLICH ✅
+      </code>
+    </div>
+    <div class="pbox">
+      <strong>Warum ist die Zungen-Form die «Sonderform»?</strong><br><br>
+      Der Affe mit herausgestreckter Zunge hat einen offenen Mund, zeigt aber <em>keine Zähne</em>. Bei einem einfachen Entscheidungsbaum mit nur dem Merkmal «Zähne sichtbar?» wird er korrekt als ungefährlich klassifiziert.<br><br>
+      Aber: Wenn der Baum stattdessen fragt «Ist der Mund offen?», würde er <em>falsch</em> als gefährlich klassifiziert – denn der Mund ist offen, aber kein Zahn sichtbar.<br><br>
+      <strong>→ Die Sonderform zeigt, dass die Formulierung der Entscheidungsregel präzise sein muss!</strong>
+    </div>
+    <div class="dbox">
+      <strong>XOR-Problem als Analogie:</strong> Das klassische Beispiel für die Grenzen eines einfachen Entscheidungsbaums (oder Perzeptrons) ist das XOR-Problem: «Genau eines von zwei Merkmalen muss wahr sein.» Dieses Muster kann ein <em>einzelnes</em> lineares Entscheidungskriterium nicht abbilden.
+    </div>
+  </div>
+
+  <div class="info">
+    <h3>⚠️ Grenzen des Lernprozesses</h3>
+    <div class="hl">
+      <strong>Overfitting:</strong> Wenn du deine Regel ausschliesslich an den Trainingsbeispielen entwickelt hast, könnte sie bei neuen Daten versagen. Echte KI-Systeme verwenden deshalb getrennte Trainings-, Validierungs- und Testdaten.
+    </div>
+    <div class="hl" style="background:#e8f0fe;border-color:var(--blue)">
+      <strong>Bias durch Daten:</strong> Wenn im Trainingsdatensatz z.B. alle Affen mit Hüten zufällig gefährlich sind, lernt die KI «Hut = gefährlich» – obwohl das falsch ist. Deshalb ist Vielfalt und Repräsentativität der Trainingsdaten entscheidend.
+    </div>
+  </div>
+
+  <div class="info">
+    <h3>📚 Fachbegriffe im Überblick</h3>
+    <div class="ggrid">
+      <div class="gt"><strong>Trainingsdaten</strong><p>Gelabelte Beispiele, aus denen das Modell lernt</p></div>
+      <div class="gt"><strong>Feature (Merkmal)</strong><p>Messbare Eigenschaft der Eingabe (z.B. Mundform)</p></div>
+      <div class="gt"><strong>Klassifizierung</strong><p>Zuordnung zu einer von mehreren Klassen</p></div>
+      <div class="gt"><strong>Entscheidungsbaum</strong><p>Regelbaum: «Wenn A dann B, sonst C»</p></div>
+      <div class="gt"><strong>Red Herring</strong><p>Ablenkungsmerkmal, das nicht zur Klasse beiträgt</p></div>
+      <div class="gt"><strong>Overfitting</strong><p>Überanpassung: perfekt auf Training, schlecht auf neue Daten</p></div>
+      <div class="gt"><strong>Bias</strong><p>Verzerrung durch unrepräsentative Trainingsdaten</p></div>
+      <div class="gt"><strong>Inferenz</strong><p>Anwenden des gelernten Modells auf neue Daten</p></div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:1.8rem;display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center">
+    <button class="btn bb" onclick="go(1)">↩ Von vorne</button>
+    <button class="btn bo" onclick="resetAndTest()">🔄 Testphase wiederholen</button>
+  </div>
+</div>
+
+<footer style="background:#3e1f05;color:rgba(255,255,255,.7);text-align:center;padding:1.1rem;font-size:.82rem;margin-top:2rem">
+  Basierend auf: AI Unplugged Aktivität 1 · Seegerer &amp; Lindner · aiunplugged.org · CC BY NC<br>
+  Digitale Lernumgebung für Informatik · 11. Klasse · Künstliche Intelligenz
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  SVG MONKEY – Original-inspired design
+//  Features: eye(normal|wink|cross|sleepy), mouth(neutral|teeth|frown|open|tongue)
+//            acc(none|mask|bandaid|bow|hair|glasses)
+// ═══════════════════════════════════════════════════════════
+function mk(o){
+  const W=120,H=125,cx=60,cy=60;
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="display:block;width:110px;height:auto">`;
+
+  // --- HAIR / BOW behind head ---
+  if(o.acc==='hair'){
+    // wild spiky hair
+    s+=`<ellipse cx="${cx}" cy="${cy-38}" rx="26" ry="16" fill="#6a3018"/>`;
+    for(let i=-3;i<=3;i++) s+=`<ellipse cx="${cx+i*9}" cy="${cy-50+Math.abs(i)*3}" rx="5" ry="${10-Math.abs(i)*1.5}" fill="#7a3818" transform="rotate(${i*12},${cx+i*9},${cy-30})"/>`;
+  }
+  if(o.acc==='bow'){
+    // red bow
+    s+=`<path d="M${cx-20} ${cy-55} Q${cx-10} ${cy-65} ${cx} ${cy-58} Q${cx+10} ${cy-65} ${cx+20} ${cy-55} Q${cx+10} ${cy-48} ${cx} ${cy-55} Q${cx-10} ${cy-48} ${cx-20} ${cy-55}Z" fill="#cc2222"/>`;
+    s+=`<circle cx="${cx}" cy="${cy-56}" r="5" fill="#ee3333"/>`;
+  }
+
+  // --- HEAD (dark brown) ---
+  s+=`<ellipse cx="${cx}" cy="${cy}" rx="48" ry="46" fill="#7a4020"/>`;
+
+  // --- MUZZLE (large tan oval – dominant lower face feature) ---
+  s+=`<ellipse cx="${cx}" cy="${cy+18}" rx="32" ry="27" fill="#d4946a"/>`;
+
+  // --- EYEBROWS ---
+  if(o.eye==='wink'||o.eye==='cross'){
+    // furrowed / expressive brows
+    s+=`<path d="M${cx-30} ${cy-22} L${cx-12} ${cy-16}" stroke="#3a1a05" stroke-width="3.5" stroke-linecap="round"/>`;
+    s+=`<path d="M${cx+12} ${cy-16} L${cx+30} ${cy-22}" stroke="#3a1a05" stroke-width="3.5" stroke-linecap="round"/>`;
+  } else {
+    // normal arch brows
+    s+=`<path d="M${cx-30} ${cy-22} Q${cx-20} ${cy-28} ${cx-10} ${cy-22}" stroke="#3a1a05" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+    s+=`<path d="M${cx+10} ${cy-22} Q${cx+20} ${cy-28} ${cx+30} ${cy-22}" stroke="#3a1a05" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  }
+
+  // --- EYES ---
+  if(o.eye==='normal'){
+    // Wide open round eyes
+    s+=`<circle cx="${cx-18}" cy="${cy-10}" r="11" fill="white"/>`;
+    s+=`<circle cx="${cx+18}" cy="${cy-10}" r="11" fill="white"/>`;
+    s+=`<circle cx="${cx-17}" cy="${cy-9}" r="7" fill="#1a0800"/>`;
+    s+=`<circle cx="${cx+17}" cy="${cy-9}" r="7" fill="#1a0800"/>`;
+    s+=`<circle cx="${cx-20}" cy="${cy-12}" r="3" fill="white"/>`;
+    s+=`<circle cx="${cx+15}" cy="${cy-12}" r="3" fill="white"/>`;
+    // upper eyelid
+    s+=`<path d="M${cx-28} ${cy-14} Q${cx-18} ${cy-22} ${cx-8} ${cy-14}" fill="none" stroke="#7a4020" stroke-width="2"/>`;
+    s+=`<path d="M${cx+8} ${cy-14} Q${cx+18} ${cy-22} ${cx+28} ${cy-14}" fill="none" stroke="#7a4020" stroke-width="2"/>`;
+  } else if(o.eye==='wink'){
+    // Left eye open, right eye squinting (wink-like / determined look)
+    s+=`<circle cx="${cx-18}" cy="${cy-10}" r="11" fill="white"/>`;
+    s+=`<circle cx="${cx-17}" cy="${cy-9}" r="7" fill="#1a0800"/>`;
+    s+=`<circle cx="${cx-20}" cy="${cy-12}" r="3" fill="white"/>`;
+    s+=`<path d="M${cx-28} ${cy-14} Q${cx-18} ${cy-22} ${cx-8} ${cy-14}" fill="none" stroke="#7a4020" stroke-width="2"/>`;
+    // right = squinting line
+    s+=`<path d="M${cx+8} ${cy-10} Q${cx+18} ${cy-6} ${cx+28} ${cy-10}" fill="#7a4020" stroke="#3a1a05" stroke-width="1.5"/>`;
+  } else if(o.eye==='cross'){
+    // X X eyes
+    const r=9;
+    [-18,18].forEach(dx=>{
+      s+=`<circle cx="${cx+dx}" cy="${cy-10}" r="${r}" fill="#ffe0c0"/>`;
+      s+=`<line x1="${cx+dx-6}" y1="${cy-16}" x2="${cx+dx+6}" y2="${cy-4}" stroke="#1a0800" stroke-width="3" stroke-linecap="round"/>`;
+      s+=`<line x1="${cx+dx+6}" y1="${cy-16}" x2="${cx+dx-6}" y2="${cy-4}" stroke="#1a0800" stroke-width="3" stroke-linecap="round"/>`;
+    });
+  } else if(o.eye==='sleepy'){
+    // Half-closed – just thin slits
+    [-18,18].forEach(dx=>{
+      s+=`<ellipse cx="${cx+dx}" cy="${cy-10}" rx="11" ry="5" fill="white"/>`;
+      s+=`<ellipse cx="${cx+dx}" cy="${cy-10}" rx="7" ry="3" fill="#1a0800"/>`;
+      // heavy upper lid line
+      s+=`<path d="M${cx+dx-11} ${cy-10} Q${cx+dx} ${cy-18} ${cx+dx+11} ${cy-10}" fill="#7a4020" stroke="#3a1a05" stroke-width="1.5"/>`;
+    });
+  }
+
+  // --- NOSE ---
+  s+=`<ellipse cx="${cx-7}" cy="${cy+8}" rx="5" ry="4" fill="#9a5030" opacity=".8"/>`;
+  s+=`<ellipse cx="${cx+7}" cy="${cy+8}" rx="5" ry="4" fill="#9a5030" opacity=".8"/>`;
+  s+=`<ellipse cx="${cx}" cy="${cy+6}" rx="8" ry="5.5" fill="#aa6038"/>`;
+
+  // --- MOUTH ---
+  if(o.mouth==='neutral'){
+    // thin straight/slight smile closed
+    s+=`<path d="M${cx-13} ${cy+22} Q${cx} ${cy+26} ${cx+13} ${cy+22}" fill="none" stroke="#7a4020" stroke-width="2.5" stroke-linecap="round"/>`;
+  } else if(o.mouth==='teeth'){
+    // Wide open – teeth visible – DANGEROUS
+    s+=`<path d="M${cx-16} ${cy+20} Q${cx} ${cy+36} ${cx+16} ${cy+20}" fill="#cc2211"/>`;
+    s+=`<rect x="${cx-15}" y="${cy+16}" width="30" height="10" rx="1.5" fill="white"/>`;
+    s+=`<line x1="${cx-5}" y1="${cy+16}" x2="${cx-5}" y2="${cy+26}" stroke="#ddd" stroke-width="1.5"/>`;
+    s+=`<line x1="${cx+5}" y1="${cy+16}" x2="${cx+5}" y2="${cy+26}" stroke="#ddd" stroke-width="1.5"/>`;
+    s+=`<path d="M${cx-15} ${cy+18} Q${cx} ${cy+13} ${cx+15} ${cy+18}" fill="#cc2211" stroke="#aa1100" stroke-width="1"/>`;
+  } else if(o.mouth==='frown'){
+    // downward curve – frown
+    s+=`<path d="M${cx-12} ${cy+26} Q${cx} ${cy+20} ${cx+12} ${cy+26}" fill="none" stroke="#7a4020" stroke-width="2.5" stroke-linecap="round"/>`;
+  } else if(o.mouth==='open'){
+    // Open wide red – no teeth
+    s+=`<ellipse cx="${cx}" cy="${cy+24}" rx="14" ry="10" fill="#cc2211"/>`;
+    s+=`<ellipse cx="${cx}" cy="${cy+24}" rx="14" ry="10" fill="none" stroke="#aa1100" stroke-width="1.5"/>`;
+  } else if(o.mouth==='tongue'){
+    // Tongue sticking out – SONDERFORM
+    s+=`<ellipse cx="${cx}" cy="${cy+22}" rx="13" ry="9" fill="#cc2211"/>`;
+    // tongue – pink drooping shape
+    s+=`<ellipse cx="${cx}" cy="${cy+31}" rx="8" ry="9" fill="#ee6688"/>`;
+    s+=`<ellipse cx="${cx}" cy="${cy+31}" rx="8" ry="9" fill="none" stroke="#cc4466" stroke-width="1.2"/>`;
+    // center line on tongue
+    s+=`<line x1="${cx}" y1="${cy+22}" x2="${cx}" y2="${cy+39}" stroke="#cc4466" stroke-width="1.2"/>`;
+  }
+
+  // --- ACCESSORY: MASK ---
+  if(o.acc==='mask'){
+    s+=`<rect x="${cx-30}" y="${cy-19}" width="60" height="18" rx="9" fill="#111111"/>`;
+    // eye holes
+    s+=`<ellipse cx="${cx-14}" cy="${cy-10}" rx="8" ry="6" fill="#333"/>`;
+    s+=`<ellipse cx="${cx+14}" cy="${cy-10}" rx="8" ry="6" fill="#333"/>`;
+  }
+
+  // --- ACCESSORY: BANDAID ---
+  if(o.acc==='bandaid'){
+    s+=`<rect x="${cx+10}" y="${cy+2}" width="20" height="10" rx="3" fill="#f0c090" transform="rotate(-15,${cx+20},${cy+7})"/>`;
+    s+=`<rect x="${cx+15}" y="${cy+4}" width="10" height="6" rx="1" fill="#e8b080" transform="rotate(-15,${cx+20},${cy+7})"/>`;
+    s+=`<circle cx="${cx+13}" cy="${cy+5}" r="1.5" fill="#d4945a" transform="rotate(-15,${cx+20},${cy+7})"/>`;
+    s+=`<circle cx="${cx+27}" cy="${cy+9}" r="1.5" fill="#d4945a" transform="rotate(-15,${cx+20},${cy+7})"/>`;
+  }
+
+  // --- ACCESSORY: GLASSES ---
+  if(o.acc==='glasses'){
+    s+=`<circle cx="${cx-18}" cy="${cy-10}" r="12" fill="rgba(200,230,255,.2)" stroke="#444" stroke-width="2"/>`;
+    s+=`<circle cx="${cx+18}" cy="${cy-10}" r="12" fill="rgba(200,230,255,.2)" stroke="#444" stroke-width="2"/>`;
+    s+=`<line x1="${cx-6}" y1="${cy-10}" x2="${cx+6}" y2="${cy-10}" stroke="#444" stroke-width="2"/>`;
+    s+=`<line x1="${cx-48}" y1="${cy-10}" x2="${cx-30}" y2="${cy-10}" stroke="#444" stroke-width="1.8"/>`;
+    s+=`<line x1="${cx+30}" y1="${cy-10}" x2="${cx+48}" y2="${cy-10}" stroke="#444" stroke-width="1.8"/>`;
+  }
+
+  s+=`</svg>`;
+  return s;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  LABELS
+// ═══════════════════════════════════════════════════════════
+const EL={normal:'Normal (offen)',wink:'Zwinkern / wütend',cross:'X-Augen',sleepy:'Schläfrig'};
+const ML={neutral:'Neutral (geschlossen)',teeth:'Zähne zeigen ⚠️',frown:'Schmollmund',open:'Offen (rot)',tongue:'Zunge raus 🟣'};
+const AL={none:'Kein Accessoire',mask:'Augenmaske',bandaid:'Pflaster',bow:'Haarschleife',hair:'Wuschelhaar',glasses:'Brille'};
+
+// ═══════════════════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════════════════
+const TRAIN=[
+  {id:'T1',  eye:'normal', mouth:'neutral', acc:'none',    label:'safe'},
+  {id:'T2',  eye:'wink',   mouth:'teeth',   acc:'none',    label:'dangerous'},
+  {id:'T3',  eye:'normal', mouth:'teeth',   acc:'glasses', label:'dangerous'},
+  {id:'T4',  eye:'cross',  mouth:'neutral', acc:'hair',    label:'safe'},
+  {id:'T5',  eye:'sleepy', mouth:'frown',   acc:'none',    label:'safe'},
+  {id:'T6',  eye:'wink',   mouth:'teeth',   acc:'bow',     label:'dangerous'},
+  {id:'T7',  eye:'sleepy', mouth:'neutral', acc:'mask',    label:'safe'},
+  {id:'T8',  eye:'normal', mouth:'teeth',   acc:'bandaid', label:'dangerous'},
+  {id:'T9',  eye:'cross',  mouth:'frown',   acc:'glasses', label:'safe'},
+  {id:'T10', eye:'wink',   mouth:'open',    acc:'none',    label:'safe'},
+  {id:'T11', eye:'normal', mouth:'teeth',   acc:'none',    label:'dangerous'},
+  {id:'T12', eye:'cross',  mouth:'teeth',   acc:'mask',    label:'dangerous'},
+];
+
+const TEST=[
+  {id:'A', eye:'sleepy', mouth:'teeth',   acc:'bow',     label:'dangerous'},
+  {id:'B', eye:'wink',   mouth:'frown',   acc:'glasses', label:'safe'},
+  {id:'C', eye:'normal', mouth:'open',    acc:'hair',    label:'safe'},
+  {id:'D', eye:'cross',  mouth:'teeth',   acc:'none',    label:'dangerous'},
+  {id:'E', eye:'sleepy', mouth:'neutral', acc:'bandaid', label:'safe'},
+  {id:'F', eye:'wink',   mouth:'teeth',   acc:'hair',    label:'dangerous'},
+  {id:'G', eye:'normal', mouth:'tongue',  acc:'none',    label:'safe', special:true},
+  {id:'H', eye:'cross',  mouth:'frown',   acc:'bow',     label:'safe'},
+  {id:'I', eye:'normal', mouth:'teeth',   acc:'mask',    label:'dangerous'},
+];
+
+const ans={};
+
+// ═══════════════════════════════════════════════════════════
+//  OVERVIEW PANELS
+// ═══════════════════════════════════════════════════════════
+function renderOverviews(){
+  // EYES
+  const eg=document.getElementById('eye-overview');
+  ['normal','wink','cross','sleepy'].forEach(e=>{
+    const d=document.createElement('div');
+    d.className='fb';
+    d.innerHTML=`<h4>${EL[e]}</h4><div class="samples">${mk({eye:e,mouth:'neutral',acc:'none'})}</div>`;
+    eg.appendChild(d);
+  });
+  // MOUTHS
+  const mg=document.getElementById('mouth-overview');
+  ['neutral','teeth','frown','open','tongue'].forEach(m=>{
+    const d=document.createElement('div');
+    d.className='fb';
+    const isT=m==='teeth', isSp=m==='tongue';
+    d.innerHTML=`<h4 style="color:${isT?'var(--red)':isSp?'var(--purple)':'#666'}">${ML[m]}</h4><div class="samples">${mk({eye:'normal',mouth:m,acc:'none'})}</div>`;
+    mg.appendChild(d);
+  });
+  // ACCESSORIES
+  const ag=document.getElementById('acc-overview');
+  ['none','mask','bandaid','bow','hair','glasses'].forEach(a=>{
+    const d=document.createElement('div');
+    d.className='fb';
+    d.innerHTML=`<h4>${AL[a]}</h4><div class="samples">${mk({eye:'normal',mouth:'neutral',acc:a})}</div>`;
+    ag.appendChild(d);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+//  RENDER TRAINING
+// ═══════════════════════════════════════════════════════════
+function renderTrain(){
+  const g=document.getElementById('train-grid');
+  const tb=document.getElementById('train-table');
+  g.innerHTML=''; tb.innerHTML='';
+  TRAIN.forEach((d,i)=>{
+    const isDgr=d.label==='dangerous';
+    const card=document.createElement('div');
+    card.className='mc';
+    card.innerHTML=`<div class="cn">${i+1}</div>${mk({eye:d.eye,mouth:d.mouth,acc:d.acc})}
+      <span class="lb ${isDgr?'d':'s'}">${isDgr?'⚠️ Gefährlich':'✅ Ungefährlich'}</span>
+      <div style="font-size:.68rem;color:#999;text-align:center">${EL[d.eye]}<br>${ML[d.mouth]}<br>${AL[d.acc]}</div>`;
+    g.appendChild(card);
+    const row=document.createElement('tr');
+    row.innerHTML=`<td><strong style="color:${isDgr?'var(--red)':'var(--green)'}">${i+1} ${isDgr?'⚠️':'✅'}</strong></td>
+      <td>${EL[d.eye]}</td>
+      <td style="color:${d.mouth==='teeth'?'var(--red)':'inherit'};font-weight:${d.mouth==='teeth'?700:400}">${ML[d.mouth]}</td>
+      <td>${AL[d.acc]}</td>
+      <td style="font-weight:700;color:${isDgr?'var(--red)':'var(--green)'}">${isDgr?'GEFÄHRLICH':'UNGEFÄHRLICH'}</td>`;
+    tb.appendChild(row);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+//  RENDER TEST
+// ═══════════════════════════════════════════════════════════
+function renderTest(){
+  const g=document.getElementById('test-grid');
+  g.innerHTML='';
+  TEST.forEach(d=>{
+    const card=document.createElement('div');
+    card.className='mc test';
+    card.id='card-'+d.id;
+    const isSpec=d.special;
+    card.innerHTML=`<div class="cn">${d.id}${isSpec?' 🟣':''}</div>
+      ${mk({eye:d.eye,mouth:d.mouth,acc:d.acc})}
+      <span class="lb u" id="lb-${d.id}">❓ ?</span>
+      ${isSpec?'<div style="font-size:.68rem;color:var(--purple);font-weight:700">Sonderfall!</div>':''}
+      <div class="tbs">
+        <button class="bc bd" onclick="classify('${d.id}','dangerous')">⚠️ Gef.</button>
+        <button class="bc bs" onclick="classify('${d.id}','safe')">✅ Sich.</button>
+      </div>`;
+    g.appendChild(card);
+  });
+  updateProg();
+}
+
+function classify(id,v){
+  ans[id]=v;
+  document.getElementById('card-'+id).className='mc '+(v==='dangerous'?'cd':'cs');
+  const lb=document.getElementById('lb-'+id);
+  lb.className='lb '+(v==='dangerous'?'d':'s');
+  lb.textContent=v==='dangerous'?'⚠️ Gefährlich':'✅ Sicher';
+  updateProg();
+}
+
+function updateProg(){
+  const done=Object.keys(ans).length, tot=TEST.length;
+  document.getElementById('pfill').style.width=(done/tot*100)+'%';
+  document.getElementById('pcnt').textContent=done+'/'+tot;
+  if(done===tot) document.getElementById('res-btn').style.display='inline-flex';
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SHOW RESULTS
+// ═══════════════════════════════════════════════════════════
+function showRes(){
+  let correct=0;
+  TEST.forEach(d=>{ if(ans[d.id]===d.label) correct++; });
+  const tot=TEST.length, pct=Math.round(correct/tot*100);
+  document.getElementById('sv').textContent=correct+'/'+tot;
+  const sl=document.getElementById('sl');
+  if(pct===100){sl.textContent='🏆 Perfekt! Die Regel vollständig entdeckt!';sl.style.color='var(--green)';}
+  else if(pct>=78){sl.textContent='👍 Sehr gut! '+pct+'% korrekt.';sl.style.color='var(--blue)';}
+  else if(pct>=56){sl.textContent='📚 Gut! Schau nochmal in die Trainingsphase.';sl.style.color='var(--orange)';}
+  else{sl.textContent='💪 Versuche es erneut!';sl.style.color='var(--red)';}
+  const rc=document.getElementById('rcards');
+  rc.innerHTML='';
+  TEST.forEach(d=>{
+    const ok=ans[d.id]===d.label, isDgr=d.label==='dangerous', isSp=d.special;
+    const div=document.createElement('div');
+    div.className='rcard';
+    div.innerHTML=`${mk({eye:d.eye,mouth:d.mouth,acc:d.acc})}
+      <div style="font-size:1.3rem">${ok?'✅':'❌'}</div>
+      <div style="font-weight:700;color:${isDgr?'var(--red)':'var(--green)'};font-size:.78rem">${isDgr?'⚠️ Gefährlich':'✅ Sicher'}${isSp?' 🟣':''}</div>
+      <div style="color:${ok?'var(--green)':'var(--red)'}">Deine Antwort:<br><strong>${ans[d.id]==='dangerous'?'⚠️ Gefährlich':'✅ Sicher'}</strong></div>`;
+    rc.appendChild(div);
+  });
+  go(5);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  NAV
+// ═══════════════════════════════════════════════════════════
+function go(n){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach((b,i)=>b.classList.toggle('active',i===n-1));
+  document.getElementById('s'+n).classList.add('active');
+  for(let i=1;i<=6;i++){
+    const p=document.getElementById('ph'+i);
+    p.classList.remove('active','done');
+    if(i<n) p.classList.add('done');
+    if(i===n) p.classList.add('active');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function startTest(){
+  Object.keys(ans).forEach(k=>delete ans[k]);
+  document.getElementById('res-btn').style.display='none';
+  renderTest();
+  go(4);
+}
+function resetAndTest(){ startTest(); }
+
+// ═══════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════
+renderOverviews();
+renderTrain();
+renderTest();
+</script>
+</body>
+</html>
